@@ -1,0 +1,16 @@
+# Files
+*.db
+*.log
+*.md
+*.xml
+*.class
+*.json
+*.iml
+
+# But not
+!pom.xml
+
+# Folders
+bin/
+target/
+.idea/
