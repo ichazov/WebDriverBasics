@@ -1,13 +1,12 @@
 package com.epam.automation;
 
+import com.epam.automation.pages.BookDepositoryHomePage;
+import com.epam.automation.pages.BookDepositorySearchResultsPage;
+import com.epam.automation.pages.ModalWindow;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-
-import java.time.Duration;
 
 public class Main {
     public static void main(String[] args) {
@@ -15,8 +14,7 @@ public class Main {
         WebDriver chromeDriver = new ChromeDriver();
         chromeDriver.get("https://www.bookdepository.com/");
 
-        new WebDriverWait(chromeDriver, Duration.ofSeconds(5))
-                .until(ExpectedConditions.presenceOfElementLocated(By.id("book-search-form")));
+        BookDepositoryHomePage bookDepositoryHomePage = new BookDepositoryHomePage(chromeDriver);
 
         WebElement logo = chromeDriver
                 .findElement(By.xpath("//img[@alt='Bookdepository.com']"));
@@ -29,35 +27,16 @@ public class Main {
         WebElement adBanner = chromeDriver
                 .findElement(By.xpath("//div[@class='tab-wrap module type-link grid tab-14548 tab-active']"));
 
-        WebElement searchInputField = chromeDriver
-                .findElement(By.xpath("//input[@name='searchTerm']"));
-        searchInputField.click();
-        searchInputField.sendKeys("camileo");
+        bookDepositoryHomePage.enterSearchQuery("camileo");
+        bookDepositoryHomePage.clickSearchButton();
 
-        WebElement searchButton = chromeDriver
-                .findElement(By.xpath("//button[@class='header-search-btn']"));
-        searchButton.click();
+        BookDepositorySearchResultsPage bookDepositorySearchResultsPage = new BookDepositorySearchResultsPage(chromeDriver);
+        bookDepositorySearchResultsPage.findAmongSearchResultsAndAddToBasket("Camileo H30");
 
-        new WebDriverWait(chromeDriver, Duration.ofSeconds(5))
-                .until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class='tab search']")));
+        ModalWindow modalWindow = new ModalWindow(chromeDriver);
+        modalWindow.closeModalWindow();
 
-        WebElement searchResultsPage = chromeDriver.findElement(By.xpath("//div[@class='tab search']"));
-        searchResultsPage
-                .findElement(By.xpath("//*[contains(text(), 'Camileo H30')]"))
-                .findElement(By.xpath("//*[@class='btn btn-sm btn-primary add-to-basket']"))
-                .click();
-
-        new WebDriverWait(chromeDriver, Duration.ofSeconds(5))
-                .until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class='modal-content']")));
-
-        WebElement modalWindow = chromeDriver.findElement(By.xpath("//div[@class='modal-content']"));
-        modalWindow
-                .findElement(By.xpath("//button[@class='close']"))
-                .click();
-
-        searchResultsPage
-                .findElement(By.xpath("//*[contains(text(), 'Camileo H30')]"))
-                .click();
+        bookDepositorySearchResultsPage.openProductPage("Camileo H30");
 
         chromeDriver.quit();
     }

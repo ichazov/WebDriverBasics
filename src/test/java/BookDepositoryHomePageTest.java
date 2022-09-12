@@ -1,0 +1,3 @@
+class BookDepositoryHomePageTest extends BaseTest {
+
+}
